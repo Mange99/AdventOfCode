@@ -1,6 +1,6 @@
-import { DataHandling as DH } from "../lib/DataHandling";
+import { FileReader } from "../../lib/FileReader";
 
-const data = DH.readFileAsInt(__dirname, "input.txt");
+const data = FileReader.readFileAsInt("\n");
 
 const clacFuel = (): number => {
   return data.reduce((prev, curr, i) => {

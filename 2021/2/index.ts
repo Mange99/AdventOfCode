@@ -1,6 +1,6 @@
-import { DataHandling } from "../DataHandling";
+import { FileReader } from "../../lib/FileReader";
 
-const data = DataHandling.readFile(__dirname, "input.txt");
+const data = FileReader.readFile("\n");
 let pos = [0, 0];
 let aim = 0;
 

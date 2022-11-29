@@ -1,6 +1,6 @@
-import { DataHandling as DH } from "../lib/DataHandling";
+import { FileReader } from "../../lib/FileReader";
 
-const data = DH.readFileAsIntComma(__dirname, "input.txt");
+const data = FileReader.readFileAsInt(",");
 
 data[1] = 12;
 data[2] = 2;

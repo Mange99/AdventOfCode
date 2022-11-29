@@ -1,9 +1,9 @@
 const file = "./input.txt";
-import { DataHandling } from "../DataHandling";
+import { FileReader } from "../../lib/FileReader";
 
 let total = 0;
 
-DataHandling.readFileAsInt(__dirname, file).reduce((prev, curr) => {
+FileReader.readFileAsInt("\n").reduce((prev, curr) => {
   if (prev < curr) {
     total += 1;
   }
