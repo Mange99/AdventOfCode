@@ -1,26 +1,22 @@
 import { FileReader } from "../../lib/FileReader";
 
-const data = FileReader.readFileAsInt("\n");
+const data = FileReader.readFileSplit("\n\r");
 
-let total: number[] = [];
+let elvCals: number[] = [];
 
 const part1 = (): number => {
-  let tot = 0;
-
-  data.map((value) => {
-    if (value > 0) {
-      tot += value;
-    } else {
-      total.push(tot);
-      tot = 0;
-    }
-  });
-  total = total.sort((a, b) => b - a);
-
-  return total[0];
+  elvCals = data
+    .map((value) =>
+      value
+        .split("\n")
+        .map(Number)
+        .reduce((prev, curr) => prev + curr, 0)
+    )
+    .sort((a, b) => b - a);
+  return elvCals[0];
 };
 
-const part2 = (): number => total[0] + total[1] + total[2];
+const part2 = (): number => elvCals[0] + elvCals[1] + elvCals[2];
 
 console.log(part1());
 console.log(part2());
