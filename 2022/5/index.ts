@@ -1,4 +1,4 @@
-import { transpose } from "../../lib/ArrayHelper";
+import { removeThreeInARow, transpose } from "../../lib/ArrayHelper";
 import { FileReader } from "../../lib/FileReader";
 import { regExMove } from "../../lib/StringHelper";
 import { Timed } from "../../lib/Timed";
@@ -6,60 +6,53 @@ import { Timed } from "../../lib/Timed";
 const data = FileReader.readFile();
 
 const part1 = (data: string): string => {
-  const stack = data.split("\n\n");
-  const arr: string[][] = stack[0].split("\n").map((value) => value.split(" "));
+  const [creates, instructions] = data.split("\n\n");
 
-  const move = stack[1].split("move").filter((value) => value.length);
-  const transposed = transpose(arr).map((value) =>
+  const trimmedCreates = creates
+    .split("\n")
+    .map((row) => removeThreeInARow(row.split(" "), ""));
+
+  const transponateCrates = transpose(trimmedCreates).map((value) =>
     value.reverse().filter((value) => value != "")
   );
 
-  move.forEach((value) => {
+  instructions.split("\n").forEach((value) => {
     const [many, from, to] = regExMove(value);
+
     for (let i = 0; i < many; i++) {
-      transposed[to - 1].push(transposed[from - 1].pop() ?? "");
+      transponateCrates[to - 1].push(transponateCrates[from - 1].pop() ?? "");
     }
   });
-  return transposed
-    .flatMap((row) =>
-      row.filter((value, i) => {
-        if (i == row.length - 1) return value;
-      })
-    )
-    .toString()
-    .replace(/[\[\]']+/g, "")
-    .replace(/\,+/g, "");
+  return transponateCrates
+    .map((x) => x[x.length - 1].replace(/[\[\]']|\,+/g, ""))
+    .join("");
 };
+
 const part2 = (data: string): string => {
-  const stack = data.split("\n\n");
+  const [creates, instructions] = data.split("\n\n");
 
-  const arr: string[][] = stack[0].split("\n").map((value) => value.split(" "));
+  const trimmedCreates = creates
+    .split("\n")
+    .map((row) => removeThreeInARow(row.split(" "), ""));
 
-  const move = stack[1].split("move").filter((value) => value.length);
-
-  const transposed = transpose(arr).map((value) =>
+  const transponateCrates = transpose(trimmedCreates).map((value) =>
     value.reverse().filter((value) => value != "")
   );
 
-  move.forEach((value) => {
+  instructions.split("\n").forEach((value) => {
     const [many, from, to] = regExMove(value);
     let temp: string[] = [];
+
     for (let i = 0; i < many; i++) {
-      temp.push(transposed[from - 1].pop() ?? "");
+      temp.push(transponateCrates[from - 1].pop() ?? "");
     }
     for (let i = 0; i < many; i++) {
-      transposed[to - 1].push(temp.pop() ?? "");
+      transponateCrates[to - 1].push(temp.pop() ?? "");
     }
   });
-  return transposed
-    .flatMap((row) =>
-      row.filter((value, i) => {
-        if (i == row.length - 1) return value;
-      })
-    )
-    .toString()
-    .replace(/[\[\]']+/g, "")
-    .replace(/\,+/g, "");
+  return transponateCrates
+    .map((x) => x[x.length - 1].replace(/[\[\]']|\,+/g, ""))
+    .join("");
 };
 
 Timed(1, () => part1(data));
