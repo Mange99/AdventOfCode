@@ -1,83 +1,66 @@
-import { readFileSync } from "fs";
+import { transpose } from "../../lib/ArrayHelper";
 import { FileReader } from "../../lib/FileReader";
+import { regExMove } from "../../lib/StringHelper";
 import { Timed } from "../../lib/Timed";
 
-// const data = FileReader.readFile();
-const data2 = readFileSync("./input.txt", "utf-8");
+const data = FileReader.readFile();
 
-const part1 = (data: string): number => {
-  let stack = data.split("\n\n");
-
+const part1 = (data: string): string => {
+  const stack = data.split("\n\n");
   const arr: string[][] = stack[0].split("\n").map((value) => value.split(" "));
 
   const move = stack[1].split("move").filter((value) => value.length);
+  const transposed = transpose(arr).map((value) =>
+    value.reverse().filter((value) => value != "")
+  );
 
-  let transposed = transpose(arr).map((value) => value.reverse());
-
-  transposed = transposed.map((row) => row.filter((value) => value != ""));
-
-  move.map((value) => {
-    const many = Number(value.substring(1, value.indexOf("from")));
-    const from = Number(
-      value.substring(value.indexOf("from") + 4, value.indexOf("to"))
-    );
-
+  move.forEach((value) => {
+    const [many, from, to] = regExMove(value);
     for (let i = 0; i < many; i++) {
-      const to = Number(value.substring(value.indexOf("to") + 2));
-
-      const x = transposed[from - 1].pop();
-
-      if (x) transposed[to - 1].push(x);
+      transposed[to - 1].push(transposed[from - 1].pop() ?? "");
     }
   });
-  transposed.map((value) => {
-    console.log(value[value.length - 1]);
-  });
-
-  return 0;
+  return transposed
+    .flatMap((row) =>
+      row.filter((value, i) => {
+        if (i == row.length - 1) return value;
+      })
+    )
+    .toString()
+    .replace(/[\[\]']+/g, "")
+    .replace(/\,+/g, "");
 };
-const part2 = (data: string): number => {
-  let stack = data.split("\n\n");
+const part2 = (data: string): string => {
+  const stack = data.split("\n\n");
 
   const arr: string[][] = stack[0].split("\n").map((value) => value.split(" "));
 
   const move = stack[1].split("move").filter((value) => value.length);
 
-  let transposed = transpose(arr).map((value) => value.reverse());
+  const transposed = transpose(arr).map((value) =>
+    value.reverse().filter((value) => value != "")
+  );
 
-  transposed = transposed.map((row) => row.filter((value) => value != ""));
-
-  move.map((value) => {
-    const many = Number(value.substring(1, value.indexOf("from")));
-    const from = Number(
-      value.substring(value.indexOf("from") + 4, value.indexOf("to"))
-    );
-    const to = Number(value.substring(value.indexOf("to") + 2));
-
+  move.forEach((value) => {
+    const [many, from, to] = regExMove(value);
     let temp: string[] = [];
-
     for (let i = 0; i < many; i++) {
-      const x = transposed[from - 1].pop();
-      if (x) temp.push(x);
+      temp.push(transposed[from - 1].pop() ?? "");
     }
     for (let i = 0; i < many; i++) {
-      const x = temp.pop();
-      if (x) transposed[to - 1].push(x);
+      transposed[to - 1].push(temp.pop() ?? "");
     }
   });
-  transposed.map((value) => {
-    console.log(value[value.length - 1]);
-  });
-
-  return 0;
+  return transposed
+    .flatMap((row) =>
+      row.filter((value, i) => {
+        if (i == row.length - 1) return value;
+      })
+    )
+    .toString()
+    .replace(/[\[\]']+/g, "")
+    .replace(/\,+/g, "");
 };
 
-function transpose(matrix: string[][]) {
-  return matrix[0].map((col, c) => matrix.map((row, r) => matrix[r][c]));
-}
-
-// console.log(part1(data2));
-console.log(part2(data2));
-
-// Timed(1, () => part1(data));
-// Timed(2, () => part2(data));
+Timed(1, () => part1(data));
+Timed(2, () => part2(data));
