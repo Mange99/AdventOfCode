@@ -1,5 +1,5 @@
 import { FileReader } from "../../lib/FileReader";
-import { timed } from "../../lib/Timed";
+import { Timed } from "../../lib/Timed";
 
 const data = FileReader.readFile();
 
@@ -32,5 +32,5 @@ const part2 = (data: string): number => {
     return prev + hands[1].indexOf(y) + 1;
   }, 0);
 };
-timed(1, () => part1(data));
-timed(2, () => part2(data));
+Timed(1, () => part1(data));
+Timed(2, () => part2(data));

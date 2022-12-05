@@ -1,6 +1,6 @@
 import { FileReader } from "../../lib/FileReader";
 
-const data = FileReader.readFile(", ");
+const data = FileReader.readFile();
 let pos = [0, 0];
 let i = 0;
 const facing = ["N", "E", "S", "W"];
@@ -24,8 +24,8 @@ const go = (steps: number) => {
   }
 };
 
-const part1 = (): number => {
-  data.forEach((value) => {
+const part1 = (data: string): number => {
+  data.split(", ").forEach((value) => {
     const dir = value.substring(0, 1);
     const steps = Number(value.substring(1));
 

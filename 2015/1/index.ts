@@ -1,11 +1,11 @@
 import { FileReader } from "../../lib/FileReader";
 
-const data = FileReader.readFile("");
+const data = FileReader.readFile();
 
-const part1 = (): number =>
-  data.reduce((prev, curr) => (curr == "(" ? prev + 1 : prev - 1), 0);
+const part1 = (data: string): number =>
+  data.split("").reduce((prev, curr) => (curr == "(" ? prev + 1 : prev - 1), 0);
 
-const part2 = (): number => {
+const part2 = (data: string): number => {
   let sum = 0;
 
   for (let i = 0; i < data.length; i++) {
@@ -17,5 +17,5 @@ const part2 = (): number => {
   return -1;
 };
 
-console.log(part1());
-console.log(part2());
+console.log(part1(data));
+console.log(part2(data));

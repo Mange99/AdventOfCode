@@ -1,22 +1,34 @@
 import { FileReader } from "../../lib/FileReader";
+import { Timed } from "../../lib/Timed";
 
-const data = FileReader.readFileSplit("\n\r");
+const data = FileReader.readFile();
 
 let elvCals: number[] = [];
 
-const part1 = (): number => {
-  elvCals = data
+const part1 = (data: string): number => {
+  return data
+    .split("\n\n")
     .map((value) =>
       value
         .split("\n")
         .map(Number)
         .reduce((prev, curr) => prev + curr, 0)
     )
-    .sort((a, b) => b - a);
-  return elvCals[0];
+    .sort((a, b) => b - a)[0];
 };
 
-const part2 = (): number => elvCals[0] + elvCals[1] + elvCals[2];
+const part2 = (data: string): number => {
+  return data
+    .split("\n\n")
+    .map((value) =>
+      value
+        .split("\n")
+        .map(Number)
+        .reduce((prev, curr) => prev + curr, 0)
+    )
+    .sort((a, b) => b - a)
+    .reduce((prev, curr, i) => (i < 3 ? prev + curr : prev));
+};
 
-console.log(part1());
-console.log(part2());
+Timed(1, () => part1(data));
+Timed(2, () => part2(data));

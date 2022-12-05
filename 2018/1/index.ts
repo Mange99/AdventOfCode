@@ -1,9 +1,9 @@
 import { FileReader } from "../../lib/FileReader";
 
-const data = FileReader.readFile("\n");
+const data = FileReader.readFile();
 
-const part1 = (): number =>
-  data.reduce((prev, curr) => {
+const part1 = (data: string): number =>
+  data.split("\n").reduce((prev, curr) => {
     const sign = curr.toString().substring(0, 1);
     const number = Number(curr.toString().substring(1));
 
@@ -11,7 +11,7 @@ const part1 = (): number =>
     else return prev - number;
   }, 0);
 
-const part2 = (): number => {
+const part2 = (data: string[]): number => {
   const cashed: number[] = [0];
   let isRunnin = true;
   let frequency = 0;
@@ -34,5 +34,5 @@ const part2 = (): number => {
   return -1;
 };
 
-console.log(part1());
-console.log(part2());
+console.log(part1(data));
+console.log(part2(data.split("\n")));

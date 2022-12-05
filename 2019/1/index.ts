@@ -1,17 +1,23 @@
 import { FileReader } from "../../lib/FileReader";
 
-const data = FileReader.readFileAsInt("\n");
+const data = FileReader.readFile();
 
-const clacFuel = (): number => {
-  return data.reduce((prev, curr, i) => {
-    return prev + Math.floor(curr / 3) - 2;
-  }, 0);
+const clacFuel = (data: string): number => {
+  return data
+    .split("\n")
+    .map(Number)
+    .reduce((prev, curr, i) => {
+      return prev + Math.floor(curr / 3) - 2;
+    }, 0);
 };
 
-const clacFuel2 = (): number => {
-  return data.reduce((prev, curr, i) => {
-    return prev + calcHelper(curr, 0);
-  }, 0);
+const clacFuel2 = (data: string): number => {
+  return data
+    .split("\n")
+    .map(Number)
+    .reduce((prev, curr, i) => {
+      return prev + calcHelper(curr, 0);
+    }, 0);
 };
 
 const calcHelper = (value: number, current: number): number => {
@@ -22,5 +28,5 @@ const calcHelper = (value: number, current: number): number => {
   return calcHelper(value, current);
 };
 
-console.log(clacFuel());
-console.log(clacFuel2());
+console.log(clacFuel(data));
+console.log(clacFuel2(data));

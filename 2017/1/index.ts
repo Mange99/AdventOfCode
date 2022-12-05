@@ -1,21 +1,21 @@
 import { FileReader } from "../../lib/FileReader";
 
-const data = FileReader.readFileAsInt("");
+const data = FileReader.readFile();
 
-const part1 = (): number => {
-  let sum = 0;
+const part1 = (data: string): number => {
+  let res = data
+    .split("")
+    .map(Number)
+    .reduce((prev, curr) => {
+      if (prev == curr) return prev + curr;
+      return prev;
+    }, 0);
+  if (data[data.length - 1] == data[0]) res += Number(data[0]);
 
-  for (let i = 0; i < data.length - 1; i++) {
-    if (data[i] == data[i + 1]) {
-      sum += data[i];
-    }
-  }
-  if (data[data.length - 1] == data[0]) sum += data[0];
-
-  return sum;
+  return res;
 };
 
-const part2 = (): number => {
+const part2 = (data: number[]): number => {
   let sum = 0;
 
   for (let i = 0; i < data.length; i++) {
@@ -31,5 +31,5 @@ const part2 = (): number => {
   return sum;
 };
 
-console.log(part1());
-console.log(part2());
+console.log(part1(data));
+console.log(part2(data.split("").map(Number)));

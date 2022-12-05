@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 
-const readFile = (seperator: string): String[] => {
-  return readFileSync("./input.txt", "utf-8").split(seperator);
+const readFile = (): string => {
+  return readFileSync("./input.txt", "utf-8");
 };
 const readFileAsInt = (seperator: string): number[] => {
   return readFileSync("./input.txt", "utf-8")
