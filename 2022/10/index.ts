@@ -7,9 +7,9 @@ const part1 = (data: string): number => {
   let cycle = 0;
   let registerX = 1;
   let total = 0;
-  let cashed: number[] = [];
-  let set = new Set<number>();
-  let values = [20, 60, 100, 140, 180, 220];
+  const cashed: number[] = [];
+  const set = new Set<number>();
+  const values = [20, 60, 100, 140, 180, 220];
 
   data.split("\n").map((value) => {
     cycle++;
@@ -34,14 +34,15 @@ const part1 = (data: string): number => {
 
 const part2 = (data: string) => {
   let registerX: number = 1;
-  let crt: string[][] = [];
+  const crt: string[][] = [];
   let crtRow: string[] = Array(40).fill(".");
   let cycle = 0;
-  let cashed: number[] = [];
+  const cashed: number[] = [];
   let added = false;
 
   data.split("\n").map((value) => {
     cycle++;
+
     if (cashed.length > 0) registerX += cashed.pop() ?? 0;
 
     if (cycle % 40 == 0) {
@@ -50,14 +51,14 @@ const part2 = (data: string) => {
       added = true;
     }
 
-    let pixelIndex = (cycle - 1) % 40;
+    let column = (cycle - 1) % 40;
 
     if (
-      pixelIndex == registerX - 1 ||
-      pixelIndex == registerX ||
-      pixelIndex == registerX + 1
+      column == registerX - 1 ||
+      column == registerX ||
+      column == registerX + 1
     ) {
-      crtRow[pixelIndex] = "#";
+      crtRow[column] = "#";
     }
 
     if (value.startsWith("addx")) {
@@ -67,14 +68,14 @@ const part2 = (data: string) => {
 
       cashed.push(add);
     }
-    pixelIndex = (cycle - 1) % 40;
+    column = (cycle - 1) % 40;
 
     if (
-      pixelIndex == registerX - 1 ||
-      pixelIndex == registerX ||
-      pixelIndex == registerX + 1
+      column == registerX - 1 ||
+      column == registerX ||
+      column == registerX + 1
     ) {
-      crtRow[pixelIndex] = "#";
+      crtRow[column] = "#";
     }
     if (!added && cycle % 40 == 0) {
       crt.push(crtRow);
