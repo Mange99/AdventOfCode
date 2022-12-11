@@ -15,8 +15,6 @@ interface Monkey {
 const inspectedItems = (data: string, rounds: number, mod = false) => {
   const monkeys: Monkey[] = [];
 
-  let lcd = 1;
-
   data.split("\n\n").map((monkey) => {
     const regEx = new RegExp(/[\d]+/g);
     const items = monkey.match(regEx) ?? [];
@@ -40,11 +38,10 @@ const inspectedItems = (data: string, rounds: number, mod = false) => {
     });
   });
 
-  if (mod) {
-    monkeys.map((monkey) => {
-      lcd *= monkey.devideNr;
-    });
-  }
+  let allMultipliers = monkeys.reduce(
+    (prev, curr) => prev * Number(curr.devideNr),
+    1
+  );
 
   for (let i = 0; i < rounds; i++) {
     monkeys.map((monkey) => {
@@ -59,7 +56,7 @@ const inspectedItems = (data: string, rounds: number, mod = false) => {
             : item + Number(monkey.operation);
         }
 
-        worry = mod ? (worry %= lcd) : Math.floor(worry / 3);
+        worry = mod ? (worry %= allMultipliers) : Math.floor(worry / 3);
 
         if (worry % monkey.devideNr == 0) {
           monkeys[monkey.ifTrue].items.push(worry);
