@@ -1,5 +1,4 @@
 import { FileReader } from "../../lib/FileReader";
-import { leastCommonMultiple } from "../../lib/MathCalcs";
 
 const data = FileReader.readFile();
 
@@ -43,7 +42,7 @@ const inspectedItems = (data: string, rounds: number, mod = false) => {
 
   if (mod) {
     monkeys.map((monkey) => {
-      lcd = leastCommonMultiple(lcd, monkey.devideNr);
+      lcd *= monkey.devideNr;
     });
   }
 
@@ -60,7 +59,7 @@ const inspectedItems = (data: string, rounds: number, mod = false) => {
             : item + Number(monkey.operation);
         }
 
-        worry = mod ? (worry %= 9699690) : Math.floor(worry / 3);
+        worry = mod ? (worry %= lcd) : Math.floor(worry / 3);
 
         if (worry % monkey.devideNr == 0) {
           monkeys[monkey.ifTrue].items.push(worry);
