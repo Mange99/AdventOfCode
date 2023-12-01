@@ -1,6 +1,6 @@
 import { removeThreeInARow, transpose } from "../../lib/ArrayHelper";
 import { FileReader } from "../../lib/FileReader";
-import { regExMove } from "../../lib/StringHelper";
+import { stringHelper } from "../../lib/StringHelper";
 import { Timed } from "../../lib/Timed";
 
 const data = FileReader.readFile();
@@ -17,7 +17,7 @@ const part1 = (data: string): string => {
   );
 
   instructions.split("\n").forEach((value) => {
-    const [many, from, to] = regExMove(value);
+    const [many, from, to] = stringHelper.regExMove(value);
 
     for (let i = 0; i < many; i++) {
       transponateCrates[to - 1].push(transponateCrates[from - 1].pop() ?? "");
@@ -40,7 +40,7 @@ const part2 = (data: string): string => {
   );
 
   instructions.split("\n").forEach((value) => {
-    const [many, from, to] = regExMove(value);
+    const [many, from, to] = stringHelper.regExMove(value);
     let temp: string[] = [];
 
     for (let i = 0; i < many; i++) {

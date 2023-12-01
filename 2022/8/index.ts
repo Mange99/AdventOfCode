@@ -1,5 +1,4 @@
 import { FileReader } from "../../lib/FileReader";
-import { alphabetNr } from "../../lib/StringHelper";
 import { Timed } from "../../lib/Timed";
 
 const data = FileReader.readFile();

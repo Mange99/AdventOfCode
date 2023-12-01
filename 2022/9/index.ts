@@ -6,7 +6,7 @@ const data = FileReader.readFile();
 const part1 = (data: string): number => {
   let posH = [0, 0];
   let posT = [0, 0];
-  const visited: string[] = [];
+  const visited: string[] = [posT.toString()];
 
   data.split("\n").map((value) => {
     const instruction = value.split(" ");
@@ -79,6 +79,8 @@ const part2 = (data: string): number => {
 
   return visited.length;
 };
+console.log(part1(data));
+console.log(part2(data));
 
-Timed(1, () => part1(data));
-Timed(2, () => part2(data));
+// Timed(1, () => part1(data));
+// Timed(2, () => part2(data));

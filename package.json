@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "create": "ts-node ./scripts/createDay.ts"
+  },
   "devDependencies": {
     "@types/node": "^18.11.9"
   }

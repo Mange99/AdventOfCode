@@ -1,5 +1,5 @@
 import { FileReader } from "../../lib/FileReader";
-import { alphabetNr } from "../../lib/StringHelper";
+import { stringHelper } from "../../lib/StringHelper";
 import { Timed } from "../../lib/Timed";
 
 const data = FileReader.readFile();
@@ -11,7 +11,7 @@ const part1 = (data: string): number =>
     for (let i = 0; i < rucksack1.length; i++) {
       for (let j = 0; j < rucksack2.length; j++) {
         if (rucksack1[i] == rucksack2[j])
-          return prev + alphabetNr(rucksack1[i]);
+          return prev + stringHelper.alphabetNr(rucksack1[i]);
       }
     }
     return prev;
@@ -29,7 +29,7 @@ const part2New = (data: string): number => {
     set1.forEach((value1) => {
       if (set2.has(value1)) {
         if (set3.has(value1)) {
-          count += alphabetNr(value1);
+          count += stringHelper.alphabetNr(value1);
         }
       }
     });

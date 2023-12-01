@@ -1,11 +1,11 @@
 import { FileReader } from "../../lib/FileReader";
 
-const data = FileReader.readFile("\n");
+const data = FileReader.readFile();
 let pos = [0, 0];
 let aim = 0;
 
 const problem1 = () => {
-  data.map((row) => {
+  data.split("\n").map((row) => {
     const x = Number(row.split(" ")[1]);
 
     if (row.startsWith("f")) pos[0] += x;
@@ -16,7 +16,7 @@ const problem1 = () => {
 };
 
 const problem2 = () => {
-  data.map((row) => {
+  data.split("\n").map((row) => {
     const x = Number(row.split(" ")[1]);
 
     if (row.startsWith("f")) {
