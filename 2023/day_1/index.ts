@@ -1,7 +1,6 @@
+import { Timed } from "./../../lib/Timed";
+import { replaceLastOccurence } from "./../../lib/StringHelper";
 import { FileReader } from "../../lib/FileReader";
-import { replaceLastOccurence } from "../../lib/StringHelper";
-import { Timed } from "../../lib/Timed";
-
 const data = FileReader.readFile();
 
 let lettersToNumber = new Map<string, string>([
@@ -29,7 +28,9 @@ const part1 = (data: string) => {
   return data
     .split("\n")
     .map((value) => value.match(/\d/g) ?? [""])
-    .reduce((prev, curr) => Number(curr[0] + curr.splice(-1)) + prev, 0);
+    .reduce((prev, curr) => {
+      return Number(curr[0] + curr[curr.length - 1]) + prev;
+    }, 0);
 };
 
 const part2 = (data: string) => {
