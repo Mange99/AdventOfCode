@@ -3,33 +3,29 @@ import { FileReader } from "../../lib/FileReader";
 import { Timed } from "../../lib/Timed";
 
 const data = FileReader.readFile();
-let currentId = 0;
 
 const part1 = (data: string) => {
   return data
     .split("\n")
     .map((input, i) => {
-      input.replace(",", "");
-      input.replace(":", "");
-
+      input.replace(",", "").replace(":", "");
       const rounds = input.split(";");
 
       let maxValues = { id: 0, maxRed: 0, maxGreen: 0, maxBlue: 0 };
 
+      maxValues.id = Number(rounds[0].split(":")[0].split(" ")[1]);
+      rounds[0].slice(0, 1);
+
       rounds.forEach((round) => {
         let newMax = { id: 0, maxRed: 0, maxGreen: 0, maxBlue: 0 };
-
         const arr = round.split(" ").filter((value) => value !== "");
 
-        if (arr[0] == "Game") {
-          maxValues.id = Number(arr[1].replace(":", ""));
-        }
         for (let i = 0; i < arr.length; i += 2) {
           const num = Number(arr[i]);
           const color = arr[i + 1];
-          if (color.includes("blue")) newMax.maxRed += num;
-          else if (color.includes("red")) newMax.maxGreen += num;
-          else if (color.includes("green")) newMax.maxBlue += num;
+          if (color.includes("blue")) newMax.maxBlue += num;
+          else if (color.includes("red")) newMax.maxRed += num;
+          else if (color.includes("green")) newMax.maxGreen += num;
         }
 
         maxValues = {
@@ -39,50 +35,18 @@ const part1 = (data: string) => {
           maxBlue: Math.max(maxValues.maxBlue, newMax.maxBlue),
         };
       });
+
       return maxValues;
     })
-    .reduce((prev, curr) => {
-      if (curr.maxBlue > 12 || curr.maxGreen > 13 || curr.maxRed > 14) {
-        return 0;
-      }
-      return prev + curr.id;
-    }, 0);
-
-  //   const x = round.map((value, r) => {
-  //     const arr = value.split(" ").filter((value) => value !== "");
-  //     let redCount = 0;
-  //     let greenCount = 0;
-  //     let blueCount = 0;
-
-  //     if (r == 0) {
-  //       const game = arr.slice(1, 2);
-  //       if (r == 0) currentId = Number(game[0].replace(":", ""));
-  //       arr.splice(0, 2);
-  //     }
-
-  //     for (let i = 0; i < arr.length - 1; i += 2) {
-  //       const num = Number(arr[i]);
-  //       const color = arr[i + 1];
-  //       if (color.includes("blue")) {
-  //         blueCount += num;
-  //       } else if (color.includes("red")) {
-  //         redCount += num;
-  //       } else if (color.includes("green")) {
-  //         greenCount += num;
-  //       }
-  //     }
-
-  //     if (redCount > 12 || greenCount > 13 || blueCount > 14) {
-  //       return 0;
-  //     }
-  //     return currentId;
-  //   });
-  //   return x;
-  // });
-  // const filteredArray = y.filter((arr) => !arr.includes(0));
-
-  // return filteredArray.reduce((prev, curr) => prev + Number(curr[0]), 0);
+    .reduce(
+      (prev, curr) =>
+        curr.maxRed > 12 || curr.maxGreen > 13 || curr.maxBlue > 14
+          ? prev
+          : prev + curr.id,
+      0
+    );
 };
+
 const part2 = (data: string) => {
   return data
     .split("\n")
@@ -119,8 +83,7 @@ const part2 = (data: string) => {
     );
 };
 
-log(part1(data));
 //2810
-// Timed(1, () => part1(data));
+Timed(1, () => part1(data));
 //69110
-// Timed(2, () => part2(data));
+Timed(2, () => part2(data));
