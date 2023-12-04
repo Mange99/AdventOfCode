@@ -8,69 +8,69 @@ const part1 = (data: string) => {
   return data
     .split("\n")
     .map((value) => {
-      let added = false;
+      const [winners, your] = value.split("|").map((part) =>
+        part
+          .split(" ")
+          .filter((x) => x !== "")
+          .map(Number)
+      );
 
-      const winners = value.split("|")[0].split(" ").filter((x) => x != "").map(Number)
-      winners.splice(0,2)
+      winners.splice(0, 2);
 
-      const your = value.split("|")[1].split(" ").filter((value) => value != "").map(Number)
-
-      
-      // Count how many numbers from 'yourNumbers' are in 'winnersNumbers'
-      let matches = 0;
-
-      const count = your.map((number) => {
-        
-        if(winners.includes(number) && !added){
-          added = true;
-          matches = 1;
-          return matches;
-        }  else if(winners.includes(number)) {
-          matches *= 2;
-          return matches
+      const wins = your.reduce((prev, curr) => {
+        if (winners.includes(curr)) {
+          prev += 1;
         }
-        return 0; 
-      })
-      return matches;
-    }
-    ).reduce((prev, curr) => prev + curr, 0)
-  };
+        return prev;
+      }, 0);
 
-  const map = new Map<number, number>([
-    [1, 0],
-]);
-let index = 1;
-
-const part2 = (data: string) => {
-  return data
-    .split("\n")
-    .map((value) => {
-      let added = false;
-
-      const winners = value.split("|")[0].split(" ").filter((x) => x != "").map(Number)
-      winners.splice(0,2)
-
-      const your = value.split("|")[1].split(" ").filter((value) => value != "").map(Number)
-
-      
-      // Count how many numbers from 'yourNumbers' are in 'winnersNumbers'
-      let match = index;
-      const count = your.forEach((number, i) => {
-        if(winners.includes(number)){
-          //add set [matches] ++;
-          const current = map.get(match) ?? 0;
-          map.set(match, current + 1);
-          match++;
-
-        } 
-      })
-      log(map)
-      index += 1;
-    });
+      return wins > 0 ? Math.pow(2, wins - 1) : 0;
+    })
+    .reduce((prev, curr) => prev + curr, 0);
 };
 
-//console.log(part1(data));
-console.log(part2(data));
+const cardCopies = new Map<number, number>([]);
 
+const addScratchToIndex = (index: number) => {
+  cardCopies.set(index, cardCopies.get(index)! + 1);
+};
+
+const part2 = (data: string) => {
+  const lines = data.split("\n");
+  lines.forEach((_, index) => cardCopies.set(index + 1, 1));
+
+  lines.map((value, p) => {
+    const [winners, your] = value.split("|").map((part) =>
+      part
+        .split(" ")
+        .filter((x) => x !== "")
+        .map(Number)
+    );
+    winners.splice(0, 2);
+
+    let currentCopies = cardCopies.get(p + 1) ?? 1;
+
+    for (let i = 0; i < currentCopies; i++) {
+      let currentIndex = p + 1;
+      your.map((value) => {
+        if (winners.includes(value)) {
+          currentIndex++;
+          addScratchToIndex(currentIndex);
+        }
+      });
+    }
+  });
+
+  let tot = 0;
+  cardCopies.forEach((value, key) => {
+    tot += value;
+  });
+  return tot;
+};
+
+log(part1(data));
+log(part2(data));
+
+//Tooo slow
 // Timed(1, () => part1(data));
 // Timed(2, () => part2(data));
