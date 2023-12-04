@@ -3,6 +3,8 @@
     "create": "ts-node ./scripts/createDay.ts"
   },
   "devDependencies": {
-    "@types/node": "^18.11.9"
+    "@types/node": "^18.19.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
   }
 }
