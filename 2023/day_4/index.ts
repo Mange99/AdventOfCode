@@ -1,6 +1,5 @@
 import { log } from "console";
 import { FileReader } from "../../lib/FileReader";
-import { Timed } from "../../lib/Timed";
 
 const data = FileReader.readFile();
 
@@ -14,7 +13,6 @@ const part1 = (data: string) => {
           .filter((x) => x !== "")
           .map(Number)
       );
-
       winners.splice(0, 2);
 
       const wins = your.reduce((prev, curr) => {
@@ -31,7 +29,7 @@ const part1 = (data: string) => {
 
 const cardCopies = new Map<number, number>([]);
 
-const addScratchToIndex = (index: number) => {
+const addCopyToIndex = (index: number) => {
   cardCopies.set(index, cardCopies.get(index)! + 1);
 };
 
@@ -55,7 +53,7 @@ const part2 = (data: string) => {
       your.map((value) => {
         if (winners.includes(value)) {
           currentIndex++;
-          addScratchToIndex(currentIndex);
+          addCopyToIndex(currentIndex);
         }
       });
     }
@@ -68,9 +66,11 @@ const part2 = (data: string) => {
   return tot;
 };
 
-log(part1(data));
-log(part2(data));
+// log(part1(data));
+// log(part2(data));
 
 //Tooo slow
+//1337 mikro sec
 // Timed(1, () => part1(data));
+// 2.7 sec
 // Timed(2, () => part2(data));
