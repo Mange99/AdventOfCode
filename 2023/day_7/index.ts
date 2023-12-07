@@ -1,108 +1,143 @@
-import { log } from "console";
 import { FileReader } from "../../lib/FileReader";
 import { Timed } from "../../lib/Timed";
 
 const data = FileReader.readFile();
 
-const cards = ["A", "K", "D", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2", "1"];
-
-type Hand = {hand: string, value: number, bid: number};
-
-const countPairs = (cards: string, bid: number): Hand => {
-  const cardCount: Record<string, number> = {};
-
-  cards.split("").forEach(card => {
-      if (card in cardCount) {
-          cardCount[card]++;
-      } else {
-          cardCount[card] = 1;
-      }
-  });
-  
-  if(Object.keys(cardCount).length == 1) {
-    return {hand: cards, value: 6, bid: bid} as Hand
-  }
-
-  const first = Object.values(cardCount)[0];
-  const second = Object.values(cardCount)[1];
-
-  if(first == 3 && second == 2 || first == 2 && second == 3) {
-    return {hand: cards, value: 4, bid: bid} as Hand
-  }  
-
-  if(Object.keys(cardCount).length == 2) {
-    return {hand: cards, value: 5, bid: bid} as Hand
-
-  }
-  if(Object.values(cardCount).includes(3)){
-    return {hand: cards, value: 3, bid: bid} as Hand
-  }
-  
-  let pairs = 0;
-  if(Object.values(cardCount).map((value) => {
-    if(value == 2) pairs++;
-  }))
-
-  return {hand: cards, value: pairs, bid: bid} as Hand;
-  return {hand: cards, value: pairs, bid: bid} as Hand;
-  
-
-}
 const part1 = (data: string) => {
-  const hands = data
+  const hands: { hand: string; value: number; bet: number }[] = data
     .split("\n")
     .map((line) => {
       const [hand, bid] = line.split(" ");
-      return countPairs(hand, Number(bid))
-    })
-
-
-    const sorted = hands.sort((a, b) => {
-      // First, compare by the 'value' property
-      if (b.value - a.value !== 0) {
-        return b.value - a.value; // Sort by 'value' in descending order
-      } 
-      let indexA = 0;
-      let indexB = 0;
-    
-      // If 'value' is the same, compare by the highest card in the hand
-      for (let i = 0; i < Math.min(a.hand.length, b.hand.length); i++) {
-        const cardA = a.hand[i];
-        const cardB = b.hand[i];
-    
-        indexA = cards.indexOf(cardA);
-         indexB = cards.indexOf(cardB);
-    
-        if (indexA !== indexB) {
-          return indexA - indexB;
-        }
-      }
-    
-      return indexA - indexB;
+      const bet = Number(bid);
+      return { hand, value: handValue(hand), bet };
     });
 
-
-    for(let i = 0; i < sorted.length; i++){
-      sorted[sorted.length-1-i].value = i+1;
-    }
-
-    log(sorted)
-
-    return sorted.reduce((prev, curr) => prev + curr.value * curr.bid, 0);
-
-  };
-
-
-
-
-const part2 = (data: string) => {
-  data.split("\n\n").map((value) => {
-    console.log(value);
-  });
+  return sortAndCalcSum(hands, { A: 14, K: 13, Q: 12, J: 11, T: 10 });
 };
 
-console.log(part1(data));
-//  console.log(part2(data));
+const part2 = (data: string) => {
+  const hands: { hand: string; value: number; bet: number }[] = data
+    .split("\n")
+    .map((line) => {
+      const [hand, bid] = line.split(" ");
+      const bet = Number(bid);
+      return { hand, value: countPairs2(hand), bet };
+    });
 
-// Timed(1, () => part1(data));
-// Timed(2, () => part2(data));
+  return sortAndCalcSum(hands, { A: 14, K: 13, Q: 12, J: 1, T: 10 });
+};
+
+const handValue = (cards: string): number => {
+  const cardCount: Record<string, number> = {};
+
+  cards.split("").forEach((card) => {
+    cardCount[card] = (cardCount[card] || 0) + 1;
+  });
+
+  return getValue(cardCount);
+};
+
+const countPairs2 = (cards: string) => {
+  let cardCount: Record<string, number> = {};
+
+  cards.split("").forEach((card) => {
+    if (card != "J") {
+      cardCount[card] = (cardCount[card] || 0) + 1;
+    }
+  });
+
+  let newCards = getStrongerHand(cards, cardCount);
+
+  cardCount = {};
+
+  newCards.split("").forEach((card) => {
+    cardCount[card] = (cardCount[card] || 0) + 1;
+  });
+
+  return getValue(cardCount);
+};
+
+const getValue = (cardCount: Record<string, number>): number => {
+  let fives = Object.values(cardCount).filter((count) => count === 5).length;
+  let fours = Object.values(cardCount).filter((count) => count === 4).length;
+  let threes = Object.values(cardCount).filter((count) => count === 3).length;
+  let pairs = Object.values(cardCount).filter((count) => count === 2).length;
+
+  if (fives === 1) return 6;
+  if (fours === 1) return 5;
+  if (threes === 1 && pairs === 1) return 4;
+  if (threes === 1) return 3;
+  if (pairs === 2) return 2;
+  if (pairs === 1) return 1;
+  return 0;
+};
+
+const sortAndCalcSum = (
+  hands: { hand: string; value: number; bet: number }[],
+  cards: Record<string, number>
+) => {
+  const sorted = hands.sort((a, b) => {
+    if (b.value - a.value !== 0) return b.value - a.value;
+    let index = 0;
+    for (let i = 0; i < 5; i++) {
+      const indexA = cards[a.hand[i]] ?? Number(a.hand[i]);
+      const indexB = cards[b.hand[i]] ?? Number(b.hand[i]);
+
+      if (indexA !== indexB) {
+        return indexB - indexA;
+      }
+    }
+    return index;
+  });
+
+  return sorted.reduce(
+    (prev, curr, index) => prev + (sorted.length - index) * curr.bet,
+    0
+  );
+};
+
+const getStrongerHand = (cards: string, cardCount: Record<string, number>) => {
+  const jokers = cards.split("").filter((c) => c === "J").length;
+  if (jokers < 1) return cards;
+
+  for (const [label, count] of Object.entries(cardCount)) {
+    if (count + jokers === 5 || count + jokers === 4) {
+      return cards.replaceAll("J", label);
+    }
+  }
+
+  for (const [label, count] of Object.entries(cardCount)) {
+    if (count === 2) {
+      for (const [secondLabel, secondCount] of Object.entries(cardCount)) {
+        if (secondCount === 2 && secondLabel !== label) {
+          return cards.replaceAll("J", label);
+        }
+      }
+    }
+  }
+  for (const [label, count] of Object.entries(cardCount)) {
+    if (count + jokers === 3) {
+      return cards.replaceAll("J", label);
+    }
+  }
+  for (const [label, count] of Object.entries(cardCount)) {
+    if (count == 2) {
+      for (const [secondLabel, secondCount] of Object.entries(cardCount)) {
+        if (secondCount == 1) {
+          return cards.replaceAll("J", secondLabel);
+        }
+      }
+    }
+  }
+  for (const [label, count] of Object.entries(cardCount)) {
+    if (count === 1) {
+      return cards.replaceAll("J", label);
+    }
+  }
+  return cards;
+};
+
+// 251545216
+Timed(1, () => part1(data));
+//250384185
+Timed(2, () => part2(data));
