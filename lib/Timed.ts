@@ -1,8 +1,10 @@
+const times = 10;
+
 export const Timed = (task: number, fn: any) => {
   const out = fn();
 
   const mean =
-    Array(100)
+    Array(times)
       .fill(0)
       .map(() => {
         const t1 = performance.now();
@@ -10,7 +12,7 @@ export const Timed = (task: number, fn: any) => {
         const t2 = performance.now();
         return t2 - t1;
       })
-      .reduce((prev, curr) => prev + curr, 0) / 100;
+      .reduce((prev, curr) => prev + curr, 0) / times;
 
   console.table({
     Part: task,
