@@ -110,15 +110,15 @@ const createsLoop = (
   const visitedStates = new Set<string>();
 
   for (let i = 0; i < 10000; i++) {
-    if (invalidStep(matrix, startPos, startDir)) {
-      return false;
-    }
-
     const state = `${startPos.row},${startPos.col},${startDir.row},${startDir.col}`;
-    visitedStates.add(state);
 
     if (visitedStates.has(state)) {
       return true;
+    }
+    visitedStates.add(state);
+
+    if (invalidStep(matrix, startPos, startDir)) {
+      return false;
     }
 
     startDir = getNewDirection(matrix, startPos, startDir);
@@ -159,9 +159,7 @@ const part2 = (data: string, visited: Set<string>) => {
 
 const visited = part1(data);
 console.log(visited.size);
-
 console.log(part2(data, visited));
-//console.log(part1(data));
 
 // Timed(1, () => part1(data));
 // Timed(2, () => part2(data));
