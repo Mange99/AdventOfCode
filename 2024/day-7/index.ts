@@ -23,9 +23,7 @@ const handleOperation = (
     } else if (combo[i] === "*") {
       startValue *= numbersToUse[i + 1];
     } else if (combo[i] === "||") {
-      const concatenated = Number(`${startValue}${numbersToUse[i + 1]}`);
-
-      startValue = concatenated;
+      startValue = Number(`${startValue}${numbersToUse[i + 1]}`);
     }
   }
   return startValue;
