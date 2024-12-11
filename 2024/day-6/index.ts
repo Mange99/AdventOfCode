@@ -1,5 +1,4 @@
 import { FileReader } from "../../lib/FileReader";
-import { Timed } from "../../lib/Timed";
 
 const data = FileReader.readFile();
 
@@ -38,62 +37,122 @@ const getNewDirection = (
   }
 };
 
-const validStep = (
+const invalidStep = (
   matrix: string[][],
-  guardPosition: Direction,
-  dir: Direction
+  position: Direction,
+  direction: Direction
 ) => {
-  if (
-    (guardPosition.row == matrix.length - 1 && dir.row == 1) ||
-    (guardPosition.row == 0 && dir.row == -1) ||
-    (guardPosition.col == matrix[0].length - 1 && dir.col == 1) ||
-    (guardPosition.col == 0 && dir.col == -1)
-  )
-    return false;
-  return true;
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+
+  const nextRow = position.row + direction.row;
+  const nextCol = position.col + direction.col;
+
+  return nextRow < 0 || nextRow >= rows || nextCol < 0 || nextCol >= cols;
+};
+
+const getStartPosAndMap = (data: string) => {
+  const position: Direction = { row: 0, col: 0 };
+
+  const matrix = data.split("\n").map((row, i) => {
+    const values = row.split("");
+
+    const bandit = values.indexOf("^");
+
+    if (bandit != -1) {
+      position.row = i;
+      position.col = bandit;
+    }
+    return values;
+  });
+  return { matrix, position };
 };
 
 const part1 = (data: string) => {
-  let guardPosition: Direction = { row: 0, col: 0 };
+  const visited = new Set<string>();
+  let { matrix, position } = getStartPosAndMap(data);
 
-  const matrix = data.split("\n").map((row, i) => {
-    const test = row.split("");
-    const pos = test.indexOf("^");
-
-    if (pos != -1) guardPosition = { row: i, col: pos };
-    return test;
-  });
-
-  let guardOnMap = true;
+  let isRunning = true;
 
   let dir: Direction = { row: -1, col: 0 };
-  const visited = new Set<string>();
 
-  while (guardOnMap) {
-    visited.add(`${guardPosition.row},${guardPosition.col}`);
+  while (isRunning) {
+    visited.add(`${position.row},${position.col}`);
 
-    if (!validStep(matrix, guardPosition, dir)) {
-      guardOnMap = false;
+    dir = getNewDirection(matrix, position, dir);
+
+    if (invalidStep(matrix, position, dir)) {
+      isRunning = false;
       break;
     }
-    dir = getNewDirection(matrix, guardPosition, dir);
 
-    guardPosition = {
-      row: (guardPosition.row += 1 * dir.row),
-      col: (guardPosition.col += 1 * dir.col),
+    position = {
+      row: position.row + dir.row,
+      col: position.col + dir.col,
     };
   }
-  return visited.size;
+
+  return visited;
 };
 
-const part2 = (data: string) => {
-  data.split("\n\n").map((value) => {
-    console.log(value);
+const createsLoop = (
+  matrix: string[][],
+  startPos: Direction,
+  startDir: Direction
+) => {
+  const visitedStates = new Set<string>();
+
+  for (let i = 0; i < 10000; i++) {
+    const state = `${startPos.row},${startPos.col},${startDir.row},${startDir.col}`;
+
+    if (visitedStates.has(state)) {
+      return true;
+    }
+    visitedStates.add(state);
+
+    if (invalidStep(matrix, startPos, startDir)) {
+      return false;
+    }
+
+    startDir = getNewDirection(matrix, startPos, startDir);
+
+    startPos = {
+      row: startPos.row + startDir.row,
+      col: startPos.col + startDir.col,
+    };
+  }
+
+  return false;
+};
+
+const part2 = (data: string, visited: Set<string>) => {
+  const { matrix, position: startPos } = getStartPosAndMap(data);
+  let steps = 0;
+  const initialDir = { row: -1, col: 0 };
+
+  visited.forEach((pos) => {
+    const [row, col] = pos.split(",").map(Number);
+    if (
+      matrix[row][col] === "#" ||
+      (row === startPos.row && col === startPos.col)
+    ) {
+      return;
+    }
+
+    const testMatrix = matrix.map((line) => [...line]);
+    testMatrix[row][col] = "#";
+
+    if (createsLoop(testMatrix, startPos, initialDir)) {
+      steps++;
+    }
   });
+
+  return steps;
 };
 
-console.log(part1(data));
-// console.log(part2(data));
+const visited = part1(data);
+console.log(visited.size);
+console.log(part2(data, visited));
 
 // Timed(1, () => part1(data));
 // Timed(2, () => part2(data));
