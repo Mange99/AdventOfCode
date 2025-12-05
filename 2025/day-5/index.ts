@@ -43,8 +43,6 @@ const part2 = (data: string) => {
   const values = data.split("\n\n");
   const ranges = values[0].split("\n");
 
-  let tot = 0;
-
   for (let i = 0; i < ranges.length; i++) {
     for (let j = i + 1; j < ranges.length; j++) {
       const overlap = rangeOverlaps(ranges[i], ranges[j]);
@@ -57,13 +55,11 @@ const part2 = (data: string) => {
     }
   }
 
-  ranges.map((range) => {
+  return ranges.reduce((acc, range) => {
     const [firstId, lastId] = range.split("-").map((x) => Number(x));
     const validIds = lastId - firstId + 1;
-    tot += validIds;
-  });
-
-  return tot;
+    return acc + validIds;
+  }, 0);
 };
 
 Timed(1, () => part1(data));
