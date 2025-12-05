@@ -27,8 +27,8 @@ const part1 = (data: string) => {
 };
 
 const rangeOverlaps = (range1: string, range2: string) => {
-  const [firstId1, lastId1] = range1.split("-").map((v) => Number(v));
-  const [firstId2, lastId2] = range2.split("-").map((v) => Number(v));
+  const [firstId1, lastId1] = range1.split("-").map((x) => Number(x));
+  const [firstId2, lastId2] = range2.split("-").map((x) => Number(x));
 
   if (firstId1 <= lastId2 && firstId2 <= lastId1) {
     return [
@@ -58,13 +58,8 @@ const part2 = (data: string) => {
   }
 
   ranges.map((range) => {
-    const [firstId, lastId] = range.split("-");
-
-    const firstNum = Number(firstId);
-    const lastNum = Number(lastId);
-
-    const validIds = lastNum - firstNum + 1;
-
+    const [firstId, lastId] = range.split("-").map((x) => Number(x));
+    const validIds = lastId - firstId + 1;
     tot += validIds;
   });
 
